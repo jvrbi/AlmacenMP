@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Main2Activity extends ArrayAdapter<Almacen> {
+public class Main5Activity extends ArrayAdapter<Almacen> {
 
     private Context contexto;
     private ArrayList<Almacen> listitems;
 
-    public Main2Activity(Activity context, ArrayList<Almacen> almacen) {
+    public Main5Activity(Activity context, ArrayList<Almacen> almacen) {
         super(context, 0, almacen);
     }
 
@@ -23,7 +23,7 @@ public class Main2Activity extends ArrayAdapter<Almacen> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItemView = convertView;
         if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.activity_main2, parent, false);
+            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.activity_main5, parent, false);
         }
         Almacen almacen = getItem(position);
         TextView t1 = (TextView) listItemView.findViewById(R.id.lote2);

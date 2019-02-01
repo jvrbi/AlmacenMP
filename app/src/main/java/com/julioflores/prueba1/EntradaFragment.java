@@ -44,8 +44,9 @@ public class EntradaFragment extends Fragment {
         //usuario = "Javier Belausteguigoitia";
         //usuario = "Danya López";
         //usuario = "Tablet";
+        usuario = "Tablet2";
         //usuario = "Edgar Cruz";
-        usuario = "Juan Antonio Muñoz";
+        //usuario = "Juan Antonio Muñoz";
         //usuario = "Edgar Gallardo";
 
         bu1.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +66,10 @@ public class EntradaFragment extends Fragment {
 
                 }
 
+                if (!u1.getText().toString().matches(".-.-.")&&!u1.getText().toString().matches("..-.-.")&&!u1.getText().toString().matches(".-.-..")&&!u1.getText().toString().matches("..-.-..")){
+                    Toast.makeText(getActivity(), "Revisar ubicación",Toast.LENGTH_SHORT).show();
+                }
+
 
 
                 if ((nl1.getText().toString().length() == 10 || nl1.getText().toString().length() == 5) && (mp1.getText().toString().length() ==5 || mp1.getText().toString().length() >21 ) && (u1.getText().toString().matches(".-.-.")||u1.getText().toString().matches("..-.-.")||u1.getText().toString().matches(".-.-..")||u1.getText().toString().matches("..-.-.."))){
@@ -80,7 +85,7 @@ public class EntradaFragment extends Fragment {
 
                 else {
 
-                    Toast.makeText(getActivity(), "Revisar ubicación",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Revisar datos",Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -183,10 +188,12 @@ public class EntradaFragment extends Fragment {
                     "&Persona=" + usuario.replaceAll(" ", "%20") +
                     "&Observaciones=" + obs.replaceAll(" ", "%20") +
                     "&FechayHora=" + dias.replaceAll(" ", "%20");
-            Toast.makeText(getActivity(), "Sus datos se han guardado",Toast.LENGTH_SHORT).show();
+//            ToDo : colocar los toasts en la parte de onSuccess, puede ser que no se mande ejecute bien y el usuario piense que sí Toast.makeText(getActivity(), "Sus datos se han guardado",Toast.LENGTH_SHORT).show();
             cliente.post(url, new AsyncHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if(statusCode == 200){ } }
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if(statusCode == 200){
+                    Toast.makeText(getActivity(), "Sus datos se han guardado",Toast.LENGTH_SHORT).show();
+                } }
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
             });

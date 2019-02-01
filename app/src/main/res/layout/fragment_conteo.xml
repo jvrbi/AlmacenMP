@@ -91,7 +91,7 @@
             android:layout_gravity="left"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:inputType="textFilter|textCapCharacters"/>
+            android:inputType="number"/>
         </LinearLayout>
 
             <LinearLayout
@@ -114,7 +114,7 @@
                     android:layout_gravity="left"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:inputType="textFilter|textCapCharacters"/>
+                    android:inputType="numberDecimal"/>
             </LinearLayout>
 
         <LinearLayout

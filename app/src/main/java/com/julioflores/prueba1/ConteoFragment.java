@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -35,7 +34,7 @@ import cz.msebera.android.httpclient.Header;
 public class ConteoFragment extends Fragment {
 
 
-    Main2Activity adaptadores;
+    Main5Activity adaptadores;
     SwipeRefreshLayout swipere;
     ListView lista2;
     AsyncHttpClient cliente;
@@ -66,8 +65,9 @@ public class ConteoFragment extends Fragment {
         //usuario = "Javier Belausteguigoitia";
         //usuario = "Danya López";
         //usuario = "Tablet";
+        usuario = "Tablet2";
         //usuario = "Edgar Cruz";
-        usuario = "Juan Antonio Muñoz";
+        //usuario = "Juan Antonio Muñoz";
         //usuario = "Edgar Gallardo";
 
         ObtenerAlmacen();
@@ -124,8 +124,8 @@ public class ConteoFragment extends Fragment {
 
     }
 
-    private void ObtenerAlmacenes(){
-        String obs = " ";
+    private void InsertarConteo(){
+        String obs = "Conteo";
         Date fechahora = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         String dias = dateFormat.format(fechahora);
@@ -134,7 +134,7 @@ public class ConteoFragment extends Fragment {
         String a = separated[0];
         String b = separated[1];
         String c = separated[2];
-        String url = "https://appsionmovil.000webhostapp.com/AlmacenMP_insertar.php?Rack="+ a.replaceAll(" ", "%20") +
+        String url = "https://appsionmovil.000webhostapp.com/AlmacenMP_insertar_conteo.php?Rack="+ a.replaceAll(" ", "%20") +
                 "&Fila="+ b.replaceAll(" ", "%20") +
                 "&Columna="+ c.replaceAll(" ", "%20") +
                 "&MateriaPrima="+ matepri2.getText().toString().replaceAll(" ", "%20") +
@@ -143,10 +143,14 @@ public class ConteoFragment extends Fragment {
                 "&Persona=" + usuario.replaceAll(" ", "%20") +
                 "&Observaciones=" + obs.replaceAll(" ", "%20") +
                 "&FechayHora=" + dias.replaceAll(" ", "%20");
-        Toast.makeText(getActivity(), "Sus datos se han guardado",Toast.LENGTH_SHORT).show();
+        lista2.setVisibility(View.INVISIBLE);
+
         cliente.post(url, new AsyncHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if(statusCode == 200){ } }
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if(statusCode == 200){
+                Toast.makeText(getActivity(), "Sus datos se han guardado",Toast.LENGTH_SHORT).show();
+                lista2.setVisibility(View.VISIBLE);
+            } }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
         });
@@ -170,7 +174,7 @@ public class ConteoFragment extends Fragment {
                 t.setFechahora(jsonarreglo.getJSONObject(i).getString("FechayHora"));
                 lista.add(t);
             }
-            adaptadores = new Main2Activity(getActivity(), lista);
+            adaptadores = new Main5Activity(getActivity(), lista);
             lista2.setAdapter(adaptadores);
             matepri2.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -222,7 +226,7 @@ public class ConteoFragment extends Fragment {
                                 swipere.setRefreshing(false);
                             }
                         } else {
-                            Toast.makeText(getActivity(), "Revisar ubicación", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "Revisar datos", Toast.LENGTH_LONG).show();
                             swipere.setRefreshing(false);
 
                         }
@@ -231,7 +235,207 @@ public class ConteoFragment extends Fragment {
 
             });
 
-            boton1.setOnClickListener(new View.OnClickListener() {
+            lista2.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
+                    final Almacen valor1 = (Almacen) lista2.getItemAtPosition(position);
+                    final AlertDialog.Builder mibuild = new AlertDialog.Builder(getActivity());
+                    final View mview = getLayoutInflater().inflate(R.layout.dialogo_conteo, null);
+                    mibuild.setTitle("Corregir");
+
+                    final String rak = String.valueOf(valor1.getRack());
+                    final String fil = String.valueOf(valor1.getFila());
+                    final String col = String.valueOf(valor1.getColumna());
+                    final String ubicacion_prueba = rak +"-"+ fil +"-"+col;
+                    final String mp = valor1.getMateriaprima();
+                    final String lmp = String.valueOf(valor1.getLotemp());
+                    final Double primervalor = valor1.getCantidad();
+                    final String per = valor1.getPersona();
+                    final String cprod = "Editado conteo";
+                    final String val3 = String.valueOf(primervalor);
+                    final String valor = String.valueOf(primervalor);
+                    final EditText cantidad_editada = (EditText) mview.findViewById(R.id.cantidad_editar_conteo);
+                    final EditText ubicacion_editada = (EditText) mview.findViewById(R.id.ubicacion_editar_conteo);
+                    final EditText lote_editado = (EditText) mview.findViewById(R.id.lote_editar_conteo);
+
+                    //final Button eliminar_conteo_btn = (Button) mview.findViewById(R.id.btn_eliminar_conteo);
+
+//                    eliminar_conteo_btn.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//
+//
+//                            ////////////////////
+//
+//                            Date fechahora = Calendar.getInstance().getTime();
+//                            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+//                            String dias = dateFormat.format(fechahora);
+//
+//                                String url = "https://appsionmovil.000webhostapp.com/AlmacenMP_CantidadOperacion.php?Rack=" + rak +
+//                                        "&Fila=" + fil + "&Columna="+ col +"&MateriaPrima="+ mp.replaceAll(" ","%20")+
+//                                        "&LoteMP="+ lmp +"&Cantidad=-"+ primervalor +"&Persona="+ usuario.replaceAll(" ", "%20")+
+//                                        "&Observaciones="+ "Eliminado conteo".replaceAll(" ","%20")+
+//                                        "&FechayHora="+ dias.replaceAll(" ","%20");
+//                                cliente.post(url, new AsyncHttpResponseHandler() {
+//                                    @Override
+//                                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) {
+//
+//                                        Toast.makeText(getActivity(),"Registro borrado",Toast.LENGTH_SHORT).show();
+//                                        //dialog.cancel();
+//                                        mibuild.setView(mview);
+//                                        AlertDialog dia = mibuild.create();
+//                                        dia.cancel();
+//                                    } }
+//                                    @Override
+//                                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+//                                });
+//
+//
+//
+//
+//
+//
+//                            //////////////////
+//
+//                        }
+//                    });
+
+                    ubicacion_editada.setText(ubicacion_prueba);
+                    lote_editado.setText(lmp);
+
+                    cantidad_editada.setText(valor);
+                    if (primervalor == 0) {
+                        Toast.makeText(getActivity(), "Esta Operación se ha terminado", Toast.LENGTH_SHORT).show();
+                    } else {
+                        final AlertDialog.Builder builder = mibuild.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String cantidad_nueva = cantidad_editada.getText().toString();
+
+                                cantidad_editada.setText(cantidad_nueva);
+                                //ubicacion_editada.setText(ubicacion_prueba);
+
+                                //op2.setText(ubicacion_nueva);
+                                String ubibacion_nueva = ubicacion_editada.getText().toString();
+                                String lote_nuevo = lote_editado.getText().toString();
+
+
+                                String[] ubicacion = ubibacion_nueva.split("-");
+                                String rack_nuevo = ubicacion[0];
+                                String fila_nueva = ubicacion[1];
+                                String columna_nueva = ubicacion[2];
+
+
+
+                                Date fechahora = Calendar.getInstance().getTime();
+                                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                                String dias = dateFormat.format(fechahora);
+                                String val1 = cantidad_editada.getText().toString();
+                                Double valor_negativo = Double.parseDouble(val1)*-1;
+                                Double valor_anterior = primervalor*-1;
+
+
+                                String valor_neg_string = valor_negativo.toString();
+                                Double val2 = Double.parseDouble(val1);
+                                Double restar = primervalor - val2;
+                                String total = String.valueOf(restar);
+                                lista2.setVisibility(View.INVISIBLE);
+                                if (val2 == 0) {
+                                    Toast.makeText(getActivity(), "Es un valor nulo", Toast.LENGTH_SHORT).show();
+                                    dialog.cancel();
+                                    lista2.setVisibility(View.VISIBLE);
+                                } else {
+                                    final String url = "https://appsionmovil.000webhostapp.com/AlmacenMP_editar_conteo.php?Rack=" + rak +
+                                            "&Fila=" + fil + "&Columna="+ col +"&MateriaPrima="+ mp.replaceAll(" ","%20")+
+                                            "&LoteMP="+ lmp +"&Cantidad="+ valor_anterior +"&Persona="+ usuario.replaceAll(" ", "%20")+
+                                            "&Observaciones="+ cprod.replaceAll(" ","%20")+
+                                            "&FechayHora="+ dias.replaceAll(" ","%20")+"&RackNuevo="+rack_nuevo+"&FilaNueva="+fila_nueva+"&ColumnaNueva="+columna_nueva+"&CantidadNueva="+val1 + "&LoteNuevo=" + lote_nuevo;
+
+
+
+                                    cliente.post(url, new AsyncHttpResponseHandler() {
+                                        @Override
+                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) {
+                                            ObtenerAlmacen();
+                                            Toast.makeText(getActivity(),"Información actualizada",Toast.LENGTH_SHORT).show();
+                                            lista2.setVisibility(View.VISIBLE);
+                                        } }
+                                        @Override
+                                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                    });
+//
+                                }
+//                                else {
+//                                    Toast.makeText(getActivity(), "Favor de Ingresar una cantidad menor", Toast.LENGTH_SHORT).show();
+//                                }
+                            }
+                        });
+
+                        mibuild.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+
+                            }
+                        });
+
+
+                        mibuild.setNegativeButton("Eliminar registro", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //////////
+
+                                Date fechahora = Calendar.getInstance().getTime();
+                                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+                                String dias = dateFormat.format(fechahora);
+                                double segundovalor = primervalor*-1;
+
+                                final String url = "https://appsionmovil.000webhostapp.com/AlmacenMP_CantidadOperacion.php?Rack=" + rak +
+                                        "&Fila=" + fil + "&Columna="+ col +"&MateriaPrima="+ mp.replaceAll(" ","%20")+
+                                        "&LoteMP="+ lmp +"&Cantidad="+ segundovalor +"&Persona="+ usuario.replaceAll(" ", "%20")+
+                                        "&Observaciones="+ "Eliminado conteo".replaceAll(" ","%20")+
+                                        "&FechayHora="+ dias.replaceAll(" ","%20");
+                                lista2.setVisibility(View.INVISIBLE);
+                                cliente.post(url, new AsyncHttpResponseHandler() {
+                                    @Override
+                                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) {
+
+                                        Toast.makeText(getActivity(),"Información actualizada",Toast.LENGTH_SHORT).show();
+                                        ObtenerAlmacen();
+                                        //dialog.cancel();
+                                        mibuild.setView(mview);
+                                        AlertDialog dia = mibuild.create();
+                                        dia.cancel();
+                                        lista2.setVisibility(View.VISIBLE);
+                                    } }
+                                    @Override
+                                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
+                                });
+
+
+                                /////////
+
+                                dialog.cancel(); }
+                        });
+
+
+                        mibuild.setView(mview);
+                        AlertDialog dialog = mibuild.create();
+                        dialog.show();
+                    }
+                return false;
+                }
+
+            });
+
+
+
+            boton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(matepri2.getText().toString().isEmpty() || lote.getText().toString().isEmpty() || cantidad.getText().toString().isEmpty() || ubicacion.getText().toString().isEmpty()){
@@ -252,11 +456,13 @@ public class ConteoFragment extends Fragment {
 
                     if ((lote.getText().toString().length() == 10 || lote.getText().toString().length() == 5) && (matepri2.getText().toString().length() ==5 || matepri2.getText().toString().length() >21 ) && (ubicacion.getText().toString().matches(".-.-.")||ubicacion.getText().toString().matches("..-.-.")||ubicacion.getText().toString().matches(".-.-..")||ubicacion.getText().toString().matches("..-.-.."))){
 
-                        ObtenerAlmacenes();
+                        InsertarConteo();
                         matepri2.setText("");
                         lote.setText("");
                         cantidad.setText("");
-                        ObtenerAlmacen3();
+                        ubicacion.setText("");
+                        ObtenerAlmacen();
+                        ubicacion.requestFocus();
 
                     }
 
@@ -268,6 +474,96 @@ public class ConteoFragment extends Fragment {
 
 
                     }
+                }
+            });
+
+
+            boton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(matepri2.getText().toString().isEmpty() || lote.getText().toString().isEmpty() || cantidad.getText().toString().isEmpty() || ubicacion.getText().toString().isEmpty()){
+                        Toast.makeText(getActivity(), "Favor de ingresar datos",Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (matepri2.getText().toString().length() <5 || matepri2.getText().toString().length() > 25){
+                        Toast.makeText(getActivity(), "Revisar MP",Toast.LENGTH_SHORT).show();
+                        matepri2.requestFocus();
+
+                    }
+
+                    if (lote.getText().toString().length() <5 || lote.getText().toString().length() > 10){
+                        Toast.makeText(getActivity(), "Revisar lote",Toast.LENGTH_SHORT).show();
+                        lote.requestFocus();
+
+                    }
+
+
+
+                    if ((lote.getText().toString().length() == 10 || lote.getText().toString().length() == 5) && (matepri2.getText().toString().length() ==5 || matepri2.getText().toString().length() >21 ) && (ubicacion.getText().toString().matches(".-.-.")||ubicacion.getText().toString().matches("..-.-.")||ubicacion.getText().toString().matches(".-.-..")||ubicacion.getText().toString().matches("..-.-.."))){
+
+                        InsertarConteo();
+                        matepri2.setText("");
+                        lote.setText("");
+                        cantidad.setText("");
+                        ObtenerAlmacen3();
+                        matepri2.requestFocus();
+
+                    }
+
+
+
+                    else {
+
+                        Toast.makeText(getActivity(), "Revisar datos",Toast.LENGTH_SHORT).show();
+
+
+                    }
+                }
+            });
+
+            matepri2.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                    if (keyCode == KeyEvent.KEYCODE_ENTER){
+
+                        if (matepri2.getText().toString().length()<4){
+                            Toast.makeText(getActivity(), "Revisar MP",Toast.LENGTH_SHORT).show();
+                            matepri2.requestFocus();
+
+                        }
+
+                        if (matepri2.getText().toString().length()==5){
+
+                        }
+
+                        if (matepri2.getText().toString().length()>6 && matepri2.getText().toString().length()<24){
+                            Toast.makeText(getActivity(), "Error en código",Toast.LENGTH_SHORT).show();
+                            matepri2.setText("");
+                            matepri2.requestFocus();
+
+                        }
+
+                        if (matepri2.getText().toString().length()>24 ){
+                            String[] partes_codigo = matepri2.getText().toString().split("-");
+                            String mp_codigo = partes_codigo[0];
+                            String lote_codigo = partes_codigo[3].trim();
+                            cantidad.requestFocus();
+
+                            matepri2.setText(mp_codigo);
+                            lote.setText(lote_codigo);
+                            cantidad.requestFocus();
+
+
+
+                        }
+                        else {
+
+                            //Toast.makeText(getActivity(), "Enter", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    return false;
                 }
             });
 
@@ -365,7 +661,7 @@ public class ConteoFragment extends Fragment {
                                 swipere.setRefreshing(false);
                             }
                         } else {
-                            Toast.makeText(getActivity(), "Revisar ubicación", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), "Revisar ubicación", Toast.LENGTH_LONG).show();
                             swipere.setRefreshing(false);
                         }
                     }
@@ -374,88 +670,7 @@ public class ConteoFragment extends Fragment {
                 }
             });
 
-            lista2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    final Almacen valor1 = (Almacen) lista2.getItemAtPosition(position);
-                    AlertDialog.Builder mibuild = new AlertDialog.Builder(getActivity());
-                    final View mview = getLayoutInflater().inflate(R.layout.operacion, null);
-                    mibuild.setTitle("Cantidades Restantes");
-                    mibuild.setMessage("Surtido:");
-                    final String rak = String.valueOf(valor1.getRack());
-                    final String fil = String.valueOf(valor1.getFila());
-                    final String col = String.valueOf(valor1.getColumna());
-                    final String mp = valor1.getMateriaprima();
-                    final String lmp = String.valueOf(valor1.getLotemp());
-                    final Double primervalor = valor1.getCantidad();
-                    final String per = valor1.getPersona();
-                    final String cprod = ubicacion.getText().toString();
-                    final String val3 = String.valueOf(primervalor);
-                    if (primervalor == 0) {
-                        Toast.makeText(getActivity(), "Esta Operación se ha terminado", Toast.LENGTH_SHORT).show();
-                    }
 
-
-                    else {
-                        final AlertDialog.Builder builder = mibuild.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-
-
-                                EditText op1 = (EditText) mview.findViewById(R.id.operacion1);
-                                Date fechahora = Calendar.getInstance().getTime();
-                                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-                                String dias = dateFormat.format(fechahora);
-                                String val1 = op1.getText().toString();
-                                Double val2 = Double.parseDouble(val1);
-                                Double restar = primervalor - val2;
-                                String total = String.valueOf(restar);
-                                if (val2 == 0) {
-                                    Toast.makeText(getActivity(), "Es un valor nulo", Toast.LENGTH_SHORT).show();
-                                    dialog.cancel();
-                                } else if (val2 <= primervalor) {
-                                    String url = "https://appsionmovil.000webhostapp.com/AlmacenMP_CantidadOperacion.php?Rack=" + rak +
-                                            "&Fila=" + fil + "&Columna="+ col +"&MateriaPrima="+ mp.replaceAll(" ","%20")+
-                                            "&LoteMP="+ lmp +"&Cantidad=-"+ val1 +"&Persona="+ usuario.replaceAll(" ", "%20")+
-                                            "&Observaciones="+ cprod.replaceAll(" ","%20")+
-                                            "&FechayHora="+ dias.replaceAll(" ","%20");
-                                    cliente.post(url, new AsyncHttpResponseHandler() {
-                                        @Override
-                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
-                                        @Override
-                                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
-                                    });
-                                    String signorestar = " - ";
-                                    String signoigual = " = ";
-                                    String url2 = "https://appsionmovil.000webhostapp.com/Almacendatoshistorico.php?MateriaPrima=" + mp +
-                                            "&OperacionHistorico=" + val3 + signorestar.replaceAll(" ","%20") +
-                                            val1 + signoigual.replaceAll(" ","%20") + total +
-                                            "&FechayHora="+dias.replaceAll(" ","%20");
-                                    cliente.post(url2, new AsyncHttpResponseHandler() {
-                                        @Override
-                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) {
-                                            ObtenerAlmacen3();
-                                        } }
-                                        @Override
-                                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                                            Toast.makeText(getActivity(),"Error, no se guardaron los datos",Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(getActivity(), "Favor de Ingresar una cantidad menor", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                        mibuild.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
-                        });
-                        mibuild.setView(mview);
-                        AlertDialog dialog = mibuild.create();
-                        dialog.show();
-                    }
-                }
-            });
 
 
         }catch (Exception e1){

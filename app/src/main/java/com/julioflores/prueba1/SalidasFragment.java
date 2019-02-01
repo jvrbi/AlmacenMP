@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,7 @@ import java.util.Date;
 import cz.msebera.android.httpclient.Header;
 
 public class SalidasFragment extends Fragment {
-    Main2Activity adaptadores;
+    Main5Activity adaptadores;
     SwipeRefreshLayout swipere;
     ListView lista2;
     AsyncHttpClient cliente;
@@ -54,8 +53,10 @@ public class SalidasFragment extends Fragment {
         //usuario = "Javier Belausteguigoitia";
         //usuario = "Danya López";
         //usuario = "Tablet";
+        usuario = "Tablet2";
+
         //usuario = "Edgar Cruz";
-       usuario = "Juan Antonio Muñoz";
+        //usuario = "Juan Antonio Muñoz";
         //usuario = "Edgar Gallardo";
 
         ObtenerAlmacen();
@@ -125,7 +126,7 @@ public class SalidasFragment extends Fragment {
                 t.setFechahora(jsonarreglo.getJSONObject(i).getString("FechayHora"));
                 lista.add(t);
             }
-            adaptadores = new Main2Activity(getActivity(), lista);
+            adaptadores = new Main5Activity(getActivity(), lista);
             lista2.setAdapter(adaptadores);
             matepri2.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -232,7 +233,9 @@ public class SalidasFragment extends Fragment {
                                             "&FechayHora="+ dias.replaceAll(" ","%20");
                                     cliente.post(url, new AsyncHttpResponseHandler() {
                                         @Override
-                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) {
+                                            Toast.makeText(getActivity(), "Sus datos se han guardado",Toast.LENGTH_SHORT).show();
+                                        } }
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
                                     });

@@ -1,4 +1,5 @@
 package com.julioflores.prueba1;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
@@ -8,14 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -30,7 +29,7 @@ import java.util.Date;
 import cz.msebera.android.httpclient.Header;
 
 public class ReacomodoFragment extends Fragment {
-    Main2Activity adaptadores;
+    Main5Activity adaptadores;
     SwipeRefreshLayout swipere;
     ListView lista2;
     AsyncHttpClient cliente;
@@ -56,8 +55,9 @@ public class ReacomodoFragment extends Fragment {
         //usuario = "Javier Belausteguigoitia";
         //usuario = "Danya López";
         //usuario = "Tablet";
+        usuario = "Tablet2";
         //usuario = "Edgar Cruz";
-        usuario = "Juan Antonio Muñoz";
+        //usuario = "Juan Antonio Muñoz";
         //usuario = "Edgar Gallardo";
 
         ObtenerAlmacen();
@@ -127,7 +127,7 @@ public class ReacomodoFragment extends Fragment {
                 t.setFechahora(jsonarreglo.getJSONObject(i).getString("FechayHora"));
                 lista.add(t);
             }
-            adaptadores = new Main2Activity(getActivity(), lista);
+            adaptadores = new Main5Activity(getActivity(), lista);
             lista2.setAdapter(adaptadores);
             matepri_reacomodo.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -237,12 +237,18 @@ public class ReacomodoFragment extends Fragment {
                                             "&LoteMP="+ lmp +"&Cantidad="+ valor_negativo +"&Persona="+ usuario.replaceAll(" ", "%20")+
                                             "&Observaciones="+ cprod.replaceAll(" ","%20")+
                                             "&FechayHora="+ dias.replaceAll(" ","%20")+"&RackNuevo="+rack_nuevo+"&FilaNueva="+fila_nueva+"&ColumnaNueva="+columna_nueva+"&CantidadNueva="+val1;
+                                    lista2.setVisibility(View.INVISIBLE);
 
 
 
                                     cliente.post(url, new AsyncHttpResponseHandler() {
                                         @Override
-                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) { } }
+                                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) { if (statusCode == 200) {
+
+                                            Toast.makeText(getActivity(), "Información actualizada",Toast.LENGTH_SHORT).show();
+                                            lista2.setVisibility(View.VISIBLE);
+
+                                        } }
                                         @Override
                                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) { }
                                     });
